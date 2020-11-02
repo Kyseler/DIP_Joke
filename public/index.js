@@ -16,15 +16,36 @@ async function getText(url) {
 async function generateJokesTable(jokes) {
     let template = await getText('/index.hbs');
     let compiledTemplate = Handlebars.compile(template);
-    return compiledTemplate({jokes});
+    return compiledTemplate({ jokes });
 }
 
 async function main() {
     try {
-        let jokes = await get('/joke');
-        document.body.innerHTML = await generateJokesTable(jokes);
+        let jokes = await get('/joke/api/jokes');
+        let div = document.getElementById("container")
+        div.innerHTML = await generateJokesTable(jokes)
     } catch (e) {
         console.log(e.name + ": " + e.message);
     }
 }
 main();
+
+async function post(url, objekt) {
+    const respons = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(objekt),
+        headers: { 'Content-Type': 'application/json' }
+    });
+    if (respons.status !== 201) // Created
+        throw new Error(respons.status);
+    return await respons.json();
+}
+
+let knap = document.getElementById("Knap");
+knap.onclick = async () => {
+    try {
+        await post("/joke/api/jokes", { setup: 'setup.value', punchline: 'punchline.value' })
+    } catch (e) {
+        console.log(e);
+    }
+}

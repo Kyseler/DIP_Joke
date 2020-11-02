@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 router
-    .get('/', async (request, response) => {
+    .get('/api/jokes', async (request, response) => {
         try {
             let jokes = await controller.getJokes();
             response.send(jokes);
@@ -20,7 +20,7 @@ router
             sendStatus(e, response);
         }
     })
-    .get('/api/othersites/:joke', async (request, response) => {
+    .get('/api/otherjokes/:site', async (request, response) => {
         try {
             let jokes = await controller.getJokes();
             response.send(jokes);
@@ -31,7 +31,7 @@ router
     .post('/api/jokes', async (request, response) => {
         try {
             let { setup, punchline } = request.body;
-            await controller.createCompany(setup, punchline);
+            await controller.createJoke(setup, punchline);
             response.send({ message: 'Joke saved!' });
         } catch (e) {
             sendStatus(e, response);
