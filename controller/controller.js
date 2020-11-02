@@ -1,7 +1,7 @@
+// controller.js
 const mongoose = require('mongoose');
 const Joke = require('../models/Joke');
 const config = require('../config');
-const { create } = require('../models/Joke');
 
 mongoose.connect(config.databaseURI, {useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -12,8 +12,11 @@ exports.createJoke = function (setup, punchline) {
     });
 };
 
-
+exports.getJoke = function (jokeId) {
+    return Joke.findById(jokeId).exec();
+};
 
 exports.getJokes = function () {
-    return Joke.find().populate('jokes').exec();
+    return Joke.find().populate('joke').exec();
 };
+
