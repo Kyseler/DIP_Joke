@@ -15,7 +15,8 @@ router
 
     .get('/:site', async (request, response) => {
         try {
-            let result = await get("https://krdo-joke-registry.herokuapp.com/api/otherjokes/:site")
+            console.log(':site')
+            let result = await get(request.params.site + "/api/jokes")
             response.send(result)
         } catch (e) {
             sendStatus(e, response);

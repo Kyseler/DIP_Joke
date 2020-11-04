@@ -30,16 +30,16 @@ async function generateJokesTable(jokes) {
     return compiledTemplate({ jokes });
 }
 
-async function main() {
+async function main(url) {
     try {
-        let jokes = await get('/joke/api/jokes');
+        let jokes = await get(url);
         let div = document.getElementById('jokesDiv')
         div.innerHTML = await generateJokesTable(jokes);
     } catch (e) {
         console.log(e.name + ": " + e.message);
     }
 }
-main();
+main('/api/jokes');
 
 let rydButton = document.getElementById('clear')
 let opretButton = document.getElementById('opretButton')
@@ -47,13 +47,13 @@ let opretButton = document.getElementById('opretButton')
 opretButton.onclick = async () => {
     if (setup.value && punchline.value) {
         try {
-            await post("/joke/api/jokes", { setup: setup.value, punchline: punchline.value });
+            await post("/api/jokes", { setup: setup.value, punchline: punchline.value });
 
         } catch (e) {
         }
         setup.value = ''
         punchline.value = ''
-        main();
+        main('/api/jokes');
     }
 }
 rydButton.onclick = async () => {
@@ -65,7 +65,7 @@ let selectSite = document.getElementById('selectSite')
 
 async function getSites() {
     try {
-        let result = await get('https://krdo-joke-registry.herokuapp.com/api/services');
+        let result = await get('api/othersites');
         createSelect(result)
     }
     catch (e) {
@@ -85,5 +85,10 @@ function createSelect(result) {
         option.text = siteArray[i]
         selectSite.add(option, i)
     }
+}
+
+selectSite.onchange = () => {
+    let url = selectSite.value;
+    main('/api/otherjokes/' + url);  
 }
 
