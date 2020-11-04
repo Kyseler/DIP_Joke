@@ -45,15 +45,17 @@ let rydButton = document.getElementById('clear')
 let opretButton = document.getElementById('opretButton')
 
 opretButton.onclick = async () => {
-    try {
-        await post("/joke/api/jokes", { setup: setup.value, punchline: punchline.value });
-        
-    } catch (e) {
-    }
-    setup.value = ''
-    punchline.value = ''
-}
+    if (setup.value && punchline.value) {
+        try {
+            await post("/joke/api/jokes", { setup: setup.value, punchline: punchline.value });
 
+        } catch (e) {
+        }
+        setup.value = ''
+        punchline.value = ''
+        main();
+    }
+}
 rydButton.onclick = async () => {
     setup.value = ''
     punchline.value = ''
@@ -73,13 +75,15 @@ async function getSites() {
 
 getSites()
 
-async function generateSelect() {
-    try {
-        let sites = await get('https://krdo-joke-registry.herokuapp.com/api/services')
-        return sites
-    }
-    catch (e) {
-        console.log(e)
+
+function createSelect(result) {
+    let siteArray = []
+    console.log(result)
+    for (let i = 0; i < result.length; i++) {
+        siteArray.push(result[i].address)
+        let option = document.createElement('option')
+        option.text = siteArray[i]
+        selectSite.add(option, i)
     }
 }
 
