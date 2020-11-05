@@ -75,20 +75,34 @@ async function getSites() {
 
 getSites()
 
-
+let siteArray = []
 function createSelect(result) {
     let siteArray = []
     console.log(result)
     for (let i = 0; i < result.length; i++) {
-        siteArray.push(result[i].address)
+        siteArray.push(result[i].name)
         let option = document.createElement('option')
         option.text = siteArray[i]
         selectSite.add(option, i)
     }
 }
 
-selectSite.onchange = () => {
-    let url = selectSite.value;
-    main('/api/otherjokes/' + url);  
-}
+selectSite.onchange = async () => {
 
+    try{
+        let id;
+        for (site of othersitesObjects) {
+            if (site.name === selectSite.value) {
+                id = site._id
+            }
+         }
+        let jokes = await get("/api/otherjokes/" + id)
+        let div = document.getElementById('jokesdiv')
+        div.innerHTML = await generateJokesTable(jokes);
+    }
+    catch(e){
+
+    }
+
+
+}
